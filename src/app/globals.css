@@ -1,26 +1,174 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* ── Light Palette ── */
+  --color-cream: #F5F0E8;
+  --color-sand: #E8DDD0;
+  --color-warm: #C9A882;
+  --color-mocha: #8B6B4E;
+  --color-ink: #2C1F14;
+  --color-white: #FDFAF6;
+  --color-accent: #B8855A;
+  --color-soft: #D4C4B0;
+  --color-muted: #9E8B7A;
+  --color-green: #5C7A5E;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* ── Fonts ── */
+  --font-serif: var(--font-serif-var), 'Cormorant Garamond', Georgia, serif;
+  --font-sans: var(--font-sans-var), 'DM Sans', system-ui, sans-serif;
+  --font-ar: var(--font-ar-var), 'Cairo', sans-serif;
+  --font-mono: var(--font-mono-var), 'Space Mono', monospace;
+
+  /* ── Animations ── */
+  --animate-float: floatY 4s ease-in-out infinite;
+  --animate-float-2: floatY 5s ease-in-out infinite 1.5s;
+  --animate-float-3: floatY 4.5s ease-in-out infinite 3s;
+  --animate-fade-up: fadeUp 0.8s cubic-bezier(0,0,0.2,1) forwards;
+  --animate-marquee: marquee 22s linear infinite;
+
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes spin {
+    to { transform: translate(-50%,-50%) rotate(360deg); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(184,133,90,0.3); }
+    50% { box-shadow: 0 0 20px 4px rgba(184,133,90,0.15); }
   }
 }
 
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img { display: block; max-width: 100%; }
+
+/* ══════════════════════════════════════════════════
+   LIGHT MODE (default)
+   ══════════════════════════════════════════════════ */
+html:not(.dark) body {
+  background: #F5F0E8;
+  color: #2C1F14;
+}
+
+/* ══════════════════════════════════════════════════
+   DARK MODE — Refined color overrides
+   ══════════════════════════════════════════════════ */
+html.dark body {
+  background: #0F0D0B;
+  color: #EDE6DA;
+}
+
+html.dark {
+  --color-cream: #0F0D0B;
+  --color-sand: #1A1714;
+  --color-warm: #C9A882;
+  --color-mocha: #D4B896;
+  --color-ink: #EDE6DA;
+  --color-white: #1E1A17;
+  --color-accent: #D4A06A;
+  --color-soft: #2E2720;
+  --color-muted: #9B8E82;
+  --color-green: #6B9B6E;
+}
+
+/* ── Dark mode specific element overrides ── */
+html.dark .float-card,
+html.dark .product-card {
+  border: 1px solid rgba(201,168,130,0.08);
+}
+
+/* Dark mode: floating cards need dark bg */
+html.dark .bg-white {
+  background-color: #171412;
+}
+
+/* ── Arabic font switching ── */
+[dir="rtl"] body,
+[dir="rtl"] p, [dir="rtl"] span, [dir="rtl"] a,
+[dir="rtl"] button, [dir="rtl"] input,
+[dir="rtl"] textarea, [dir="rtl"] select, [dir="rtl"] label,
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 {
+  font-family: var(--font-ar) !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C9A882; border-radius: 3px; }
+html.dark ::-webkit-scrollbar-thumb { background: #2E2720; }
+
+/* ── Selection ── */
+::selection { background: rgba(184,133,90,0.25); color: inherit; }
+
+/* ── Cursor ── */
+@media (pointer: fine) {
+  a, button, .product-card, input, textarea, select, label { cursor: none !important; }
+  body { cursor: none; }
+}
+
+/* ── Section eyebrow ── */
+.section-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--color-accent);
+}
+
+/* RTL eyebrow */
+[dir="rtl"] .section-eyebrow::before { display: none; }
+[dir="rtl"] .section-eyebrow::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--color-accent);
+}
+
+/* ── Scrollbar hide ── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Smooth theme transition ── */
+body, nav, footer, section, .product-card, .float-card, h1, h2, h3, p, span, a, button {
+  transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Enhanced font rendering ── */
+h1, h2, h3 {
+  font-feature-settings: 'liga' 1, 'kern' 1;
+  font-kerning: auto;
 }
