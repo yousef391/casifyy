@@ -13,7 +13,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>('fr');
+  const [locale, setLocaleState] = useState<Locale>('ar');
 
   const dir = LOCALES.find((l) => l.id === locale)?.dir || 'ltr';
 

@@ -46,8 +46,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="fr"
-      dir="ltr"
+      lang="ar"
+      dir="rtl"
       className={`${cormorant.variable} ${dmSans.variable} ${arabicFont.variable} ${spaceMono.variable}`}
     >
       <body>
