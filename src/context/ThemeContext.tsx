@@ -12,20 +12,18 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType>({ theme: 'light', toggleTheme: () => {} });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light');
+  // Force light mode while dark mode toggle is hidden
+  const [theme] = useState<Theme>('light');
 
   useEffect(() => {
-    const saved = localStorage.getItem('casify-theme') as Theme | null;
-    if (saved) setTheme(saved);
-    // Always default to light if no saved preference
+    // Clear any previously saved dark preference and ensure light mode
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('casify-theme', 'light');
   }, []);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('casify-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  const toggleTheme = () => {
+    // No-op while dark mode is disabled
+  };
 
   return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }
