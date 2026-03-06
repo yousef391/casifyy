@@ -11,9 +11,9 @@ import { LOCALES } from '@/lib/i18n';
 import CartDrawer from '@/components/ui/CartDrawer';
 
 const NAV_ITEMS = [
-  { href: '#products', fr: 'Boutique', en: 'Shop', ar: 'المتجر' },
+  { href: '/#products', fr: 'Boutique', en: 'Shop', ar: 'المتجر' },
   { href: '/create', fr: 'Personnaliser', en: 'Customize', ar: 'خصّصي', isLink: true },
-  { href: '#testimonials', fr: 'Avis', en: 'Reviews', ar: 'آراء' },
+  { href: '/#testimonials', fr: 'Avis', en: 'Reviews', ar: 'آراء' },
 ];
 
 export default function Navbar() {
