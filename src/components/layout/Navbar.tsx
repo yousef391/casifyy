@@ -147,7 +147,7 @@ export default function Navbar() {
 
             {/* Cart */}
             <button
-              onClick={() => setCartOpen(true)}
+              onClick={() => { setCartOpen(true); setMobileOpen(false); }}
               className="relative w-9 h-9 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-soft/20 transition-all duration-200"
             >
               <ShoppingBag className="w-[16px] h-[16px]" />

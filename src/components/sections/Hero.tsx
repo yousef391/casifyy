@@ -40,6 +40,7 @@ function PhoneFrame({ src, className, size = 'md' }: { src: string; className?: 
 export default function Hero() {
   const { locale } = useLanguage();
   const [activeCase, setActiveCase] = useState(0);
+  const isDark = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
 
   const t = {
     badge: locale === 'ar' ? '✦ أغطية حرفية' : locale === 'en' ? '✦ Artisan Cases' : '✦ Coques Artisanales',
@@ -117,7 +118,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-wrap items-center gap-4"
         >
-          <Link href="/create" className="group relative inline-flex items-center gap-3 bg-ink text-cream px-7 py-3.5 font-sans text-[11px] tracking-[0.1em] uppercase font-medium overflow-hidden rounded-sm">
+          <Link href="/create" className="group relative inline-flex items-center gap-3 px-7 py-3.5 font-sans text-[11px] tracking-[0.1em] uppercase font-medium overflow-hidden rounded-sm" style={{ background: '#2C1F14', color: '#F5F0E8' }}>
             <span className="absolute inset-0 bg-accent -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
             <span className="relative z-[1]">{t.cta}</span>
             <span className="relative z-[1] transition-transform group-hover:translate-x-0.5">→</span>
@@ -215,8 +216,8 @@ export default function Hero() {
           </div>
 
           {/* Floating card */}
-          <div className="absolute top-[10%] -left-[5%] bg-white rounded-xl px-4 py-3 shadow-[0_8px_32px_rgba(44,31,20,0.1)] z-10 animate-float min-w-[140px]">
-            <p className="font-sans text-[9px] tracking-[0.1em] uppercase text-muted mb-1">
+          <div className="absolute top-[10%] -left-[5%] rounded-xl px-4 py-3 shadow-[0_8px_32px_rgba(44,31,20,0.1)] z-10 animate-float min-w-[140px]" style={{ background: '#FDFAF6' }}>
+            <p className="font-sans text-[9px] tracking-[0.1em] uppercase mb-1" style={{ color: '#9E8B7A' }}>
               {locale === 'ar' ? 'آخر طلب' : locale === 'en' ? 'Latest order' : 'Dernière commande'}
             </p>
             <div className="flex items-center gap-2">
@@ -224,17 +225,17 @@ export default function Hero() {
                 <Image src={SHOWCASE_CASES[activeCase].src} alt="" fill className="object-cover" sizes="32px" />
               </div>
               <div>
-                <p className="font-sans text-[11px] font-medium text-ink">{SHOWCASE_CASES[activeCase].name} ✦</p>
-                <p className="font-sans text-[9px] text-muted">iPhone 15 Pro</p>
+                <p className="font-sans text-[11px] font-medium" style={{ color: '#2C1F14' }}>{SHOWCASE_CASES[activeCase].name} ✦</p>
+                <p className="font-sans text-[9px]" style={{ color: '#9E8B7A' }}>iPhone 15 Pro</p>
               </div>
             </div>
           </div>
 
           {/* Rating card */}
-          <div className="absolute bottom-[15%] -right-[8%] bg-white rounded-xl px-4 py-3 shadow-[0_8px_32px_rgba(44,31,20,0.1)] z-10 animate-float-2 text-center">
-            <div className="flex gap-0.5 text-xs justify-center">⭐⭐⭐⭐⭐</div>
-            <p className="font-serif text-xl font-light text-ink">4.9</p>
-            <p className="font-sans text-[9px] text-muted tracking-[0.08em] uppercase">
+          <div className="absolute bottom-[15%] -right-[8%] rounded-xl px-4 py-3 shadow-[0_8px_32px_rgba(44,31,20,0.1)] z-10 animate-float-2 text-center" style={{ background: '#FDFAF6' }}>
+            <div className="flex gap-0.5 text-xs justify-center" style={{ color: '#D4A06A' }}>★★★★★</div>
+            <p className="font-serif text-xl font-light" style={{ color: '#2C1F14' }}>4.9</p>
+            <p className="font-sans text-[9px] tracking-[0.08em] uppercase" style={{ color: '#9E8B7A' }}>
               {locale === 'ar' ? 'رضا' : locale === 'en' ? 'Satisfaction' : 'Satisfaction'}
             </p>
           </div>

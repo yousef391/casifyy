@@ -264,7 +264,8 @@ export default function CreatePage() {
                     </button>
                     <button
                       onClick={() => setStep('order')}
-                      className="group relative inline-flex items-center gap-2 bg-ink text-cream px-6 py-3 font-sans text-[11px] tracking-[0.1em] uppercase font-medium rounded-sm overflow-hidden"
+                      className="group relative inline-flex items-center gap-2 px-6 py-3 font-sans text-[11px] tracking-[0.1em] uppercase font-medium rounded-sm overflow-hidden"
+                      style={{ background: isDark ? '#EDE6DA' : '#2C1F14', color: isDark ? '#0F0D0B' : '#F5F0E8' }}
                     >
                       <span className="absolute inset-0 bg-accent -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
                       <span className="relative z-[1]">{t.next}</span>

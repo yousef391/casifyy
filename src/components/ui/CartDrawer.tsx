@@ -28,13 +28,13 @@ export default function CartDrawer() {
           <>
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-ink/30 backdrop-blur-sm z-[80]"
+              className="fixed inset-0 bg-ink/30 backdrop-blur-sm z-[210]"
               onClick={() => setIsOpen(false)}
             />
             <motion.div
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white border-l border-sand z-[85] flex flex-col"
+              className="fixed top-0 right-0 bottom-0 w-[85vw] sm:w-[380px] md:max-w-md bg-white border-l border-sand z-[220] flex flex-col rounded-l-2xl shadow-2xl"
             >
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-5 border-b border-sand">

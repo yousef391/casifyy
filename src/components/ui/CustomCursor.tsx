@@ -1,14 +1,31 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const mouse = useRef({ x: 0, y: 0 });
   const ring = useRef({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(true); // default hidden to avoid flash
 
   useEffect(() => {
+    // Detect touch device or small screen
+    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+    const isSmall = window.innerWidth < 768;
+    setIsMobile(isTouch || isSmall);
+
+    const handleResize = () => {
+      const touch = window.matchMedia('(pointer: coarse)').matches;
+      setIsMobile(touch || window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return;
+
     const move = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) {
@@ -52,7 +69,9 @@ export default function CustomCursor() {
         el.removeEventListener('mouseleave', shrink);
       });
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <>
