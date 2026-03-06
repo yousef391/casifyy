@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Camera, Smartphone, Mail } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function Footer() {
@@ -44,10 +45,16 @@ export default function Footer() {
           </p>
           <p className="font-sans text-[13px] leading-[1.75] max-w-[260px] mb-5" style={{ color: colors.text }}>{t.desc}</p>
           <div className="flex gap-2.5">
-            {['📷', '📱', '✉️'].map((icon, i) => (
-              <a key={i} href="#" className="w-9 h-9 rounded-full flex items-center justify-center text-[13px] transition-all hover:opacity-80"
-                 style={{ border: `1px solid ${colors.iconBorder}`, color: colors.text }}>
-                {icon}
+            {[
+              { icon: Camera, label: 'Instagram' },
+              { icon: Smartphone, label: 'Phone' },
+              { icon: Mail, label: 'Email' },
+            ].map(({ icon: Icon, label }) => (
+              <a key={label} href="#" className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:opacity-80"
+                 style={{ border: `1px solid ${colors.iconBorder}`, color: colors.text }}
+                 aria-label={label}
+              >
+                <Icon className="w-4 h-4" />
               </a>
             ))}
           </div>

@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ShoppingBag, Sun, Moon, Globe } from 'lucide-react';
+import { Menu, X, ShoppingBag, Globe } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
-import { useTheme } from '@/context/ThemeContext';
+
 import { LOCALES } from '@/lib/i18n';
 import CartDrawer from '@/components/ui/CartDrawer';
 
@@ -22,7 +22,7 @@ export default function Navbar() {
   const [langOpen, setLangOpen] = useState(false);
   const { locale, setLocale } = useLanguage();
   const { totalItems, setIsOpen: setCartOpen } = useCart();
-  const { theme, toggleTheme } = useTheme();
+
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 30);
@@ -84,24 +84,6 @@ export default function Navbar() {
 
           {/* Right — actions */}
           <div className="flex items-center gap-1.5">
-            {/* Theme toggle */}
-            <button
-              onClick={toggleTheme}
-              className="w-9 h-9 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-soft/20 transition-all duration-200"
-              aria-label="Toggle theme"
-            >
-              <AnimatePresence mode="wait">
-                {theme === 'light' ? (
-                  <motion.div key="moon" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                    <Moon className="w-[16px] h-[16px]" />
-                  </motion.div>
-                ) : (
-                  <motion.div key="sun" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                    <Sun className="w-[16px] h-[16px]" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
 
             {/* Language dropdown */}
             <div className="relative">
@@ -229,15 +211,8 @@ export default function Navbar() {
 
               {/* Controls */}
               <div className="px-5 py-4 space-y-3">
-                {/* Theme & Language row */}
+                {/* Language row */}
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={toggleTheme}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border border-soft/30 text-muted hover:text-ink hover:border-soft/60 transition-all text-[11px] tracking-wider uppercase font-sans"
-                  >
-                    {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
-                    {theme === 'light' ? 'Dark' : 'Light'}
-                  </button>
                   <div className="flex rounded-lg border border-soft/30 overflow-hidden">
                     {LOCALES.map((l) => (
                       <button
