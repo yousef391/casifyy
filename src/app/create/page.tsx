@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Check, ChevronRight, Upload, Smartphone, FileText, Send } from 'lucide-react';
+import { ArrowLeft, Check, ChevronRight, Upload, Smartphone, FileText, Send, X as XIcon, ImageIcon } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { BRANDS, PHONE_MODELS, WILAYAS } from '@/lib/constants';
@@ -19,7 +19,8 @@ export default function CreatePage() {
   const [step, setStep] = useState<Step>('model');
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<{ file: File; preview: string }[]>([]);
+  const MAX_PHOTOS = 3;
   const [isDragOver, setIsDragOver] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,24 +29,34 @@ export default function CreatePage() {
   const stepIndex = STEPS.indexOf(step);
 
   useEffect(() => {
-    return () => { if (previewUrl) URL.revokeObjectURL(previewUrl); };
-  }, [previewUrl]);
+    return () => { photos.forEach(p => URL.revokeObjectURL(p.preview)); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleFile = useCallback((file: File) => {
-    if (file.type.startsWith('image/')) {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(URL.createObjectURL(file));
-    }
-  }, [previewUrl]);
+  const handleFiles = useCallback((files: FileList | File[]) => {
+    const remaining = MAX_PHOTOS - photos.length;
+    const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/')).slice(0, remaining);
+    const newPhotos = imageFiles.map(file => ({ file, preview: URL.createObjectURL(file) }));
+    setPhotos(prev => [...prev, ...newPhotos]);
+  }, [photos.length]);
+
+  const removePhoto = (index: number) => {
+    setPhotos(prev => {
+      const updated = [...prev];
+      URL.revokeObjectURL(updated[index].preview);
+      updated.splice(index, 1);
+      return updated;
+    });
+  };
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); setIsDragOver(false);
-    if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
-  }, [handleFile]);
+    if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+  }, [handleFiles]);
 
   const handleSubmit = () => {
     setSubmitted(true);
-    setTimeout(() => { setSubmitted(false); setStep('model'); setPreviewUrl(null); setBrand(''); setModel(''); }, 4000);
+    setTimeout(() => { setSubmitted(false); setStep('model'); setPhotos([]); setBrand(''); setModel(''); }, 4000);
   };
 
   const t = {
@@ -61,8 +72,7 @@ export default function CreatePage() {
     modelLabel: locale === 'ar' ? 'اختاري الموديل' : locale === 'en' ? 'Choose model' : 'Choisissez le modèle',
     popular: locale === 'ar' ? 'الأكثر طلباً' : locale === 'en' ? 'Popular' : 'Populaire',
     // Step 2
-    uploadTitle: locale === 'ar' ? 'ارفعي تصميمكِ' : locale === 'en' ? 'Upload your design' : 'Uploadez votre design',
-    uploadSub: locale === 'ar' ? 'اسحبي الصورة أو انقري للرفع' : locale === 'en' ? 'Drag & drop or click to upload' : 'Glissez-déposez ou cliquez pour uploader',
+
     descLabel: locale === 'ar' ? 'وصف / نص للإضافة (اختياري)' : locale === 'en' ? 'Description / text to add (optional)' : 'Description / texte à ajouter (optionnel)',
     // Step 3
     name: locale === 'ar' ? 'الاسم' : locale === 'en' ? 'Full name' : 'Nom complet',
@@ -213,39 +223,61 @@ export default function CreatePage() {
                 </motion.div>
               ) : step === 'design' ? (
                 <motion.div key="design" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.3 }}>
-                  <label className="block font-sans text-[10px] tracking-[0.12em] uppercase text-muted mb-3">{t.uploadTitle}</label>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="block font-sans text-[10px] tracking-[0.12em] uppercase text-muted">
+                      {locale === 'ar' ? 'ارفعي تصميمكِ' : locale === 'en' ? 'Upload your design' : 'Uploadez votre design'}
+                    </label>
+                    <span className="font-sans text-[10px] text-muted">{photos.length} / {MAX_PHOTOS}</span>
+                  </div>
 
-                  {/* Upload zone */}
-                  <label htmlFor="fileInput" className="block cursor-pointer">
-                    <div
-                      onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
-                      onDragLeave={() => setIsDragOver(false)}
-                      onDrop={onDrop}
-                      className="relative border-2 border-dashed rounded-xl p-10 text-center transition-all"
-                      style={{
-                        borderColor: isDragOver ? '#D4A06A' : previewUrl ? '#5C7A5E' : (isDark ? 'rgba(201,168,130,0.2)' : 'rgba(212,196,176,0.5)'),
-                        background: isDragOver ? (isDark ? 'rgba(212,160,106,0.06)' : 'rgba(184,133,90,0.05)') : previewUrl ? (isDark ? 'rgba(92,122,94,0.06)' : 'rgba(92,122,94,0.05)') : (isDark ? 'rgba(30,26,22,0.5)' : 'rgba(232,221,208,0.3)'),
-                      }}
-                    >
-                      {previewUrl ? (
-                        <div className="flex flex-col items-center gap-3">
-                          <div className="w-24 h-24 rounded-lg overflow-hidden relative mx-auto">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                          </div>
-                          <p className="font-sans text-[11px] text-green flex items-center gap-1"><Check className="w-3 h-3" /> Image uploaded</p>
-                          <p className="font-sans text-[10px] text-accent underline">{t.change}</p>
-                        </div>
-                      ) : (
-                        <>
-                          <Upload className="w-8 h-8 text-muted mx-auto mb-3" />
-                          <p className="font-sans text-sm text-muted">{t.uploadSub}</p>
-                          <p className="font-sans text-[10px] text-muted mt-1.5">JPG · PNG · PDF · max 10MB</p>
-                        </>
-                      )}
-                    </div>
-                  </label>
-                  <input ref={fileInputRef} type="file" id="fileInput" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
+                  {/* Photo grid */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {/* Uploaded photos */}
+                    {photos.map((photo, i) => (
+                      <div key={i} className="relative aspect-square rounded-xl overflow-hidden group" style={{ border: `1px solid ${isDark ? 'rgba(92,122,94,0.3)' : 'rgba(92,122,94,0.3)'}` }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={photo.preview} alt={`Design ${i + 1}`} className="w-full h-full object-cover" />
+                        <button
+                          onClick={() => removePhoto(i)}
+                          className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-ink/70 text-cream flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                        >
+                          <XIcon className="w-3 h-3" />
+                        </button>
+                        {i === 0 && (
+                          <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-accent text-cream text-[8px] font-sans tracking-wider uppercase">
+                            Main
+                          </span>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Upload slots */}
+                    {photos.length < MAX_PHOTOS && (
+                      <label
+                        htmlFor="fileInput"
+                        onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+                        onDragLeave={() => setIsDragOver(false)}
+                        onDrop={onDrop}
+                        className="aspect-square rounded-xl border-2 border-dashed cursor-pointer flex flex-col items-center justify-center transition-all hover:border-accent/50"
+                        style={{
+                          borderColor: isDragOver ? '#D4A06A' : (isDark ? 'rgba(201,168,130,0.2)' : 'rgba(212,196,176,0.5)'),
+                          background: isDragOver ? (isDark ? 'rgba(212,160,106,0.06)' : 'rgba(184,133,90,0.05)') : (isDark ? 'rgba(30,26,22,0.5)' : 'rgba(232,221,208,0.3)'),
+                        }}
+                      >
+                        <Upload className="w-5 h-5 text-muted mb-1" />
+                        <span className="font-sans text-[9px] text-muted tracking-wider uppercase">
+                          {photos.length === 0
+                            ? (locale === 'ar' ? 'رفع' : locale === 'en' ? 'Upload' : 'Uploader')
+                            : `+${MAX_PHOTOS - photos.length}`}
+                        </span>
+                      </label>
+                    )}
+                  </div>
+
+                  <input ref={fileInputRef} type="file" id="fileInput" accept="image/*" multiple className="hidden" onChange={(e) => e.target.files && handleFiles(e.target.files)} />
+                  <p className="font-sans text-[10px] text-muted mt-3">
+                    {locale === 'ar' ? 'حتى 3 صور · JPG · PNG · max 10MB' : locale === 'en' ? 'Up to 3 photos · JPG · PNG · max 10MB' : 'Jusqu\'à 3 photos · JPG · PNG · max 10 Mo'}
+                  </p>
 
                   {/* Description */}
                   <div className="mt-6">
@@ -331,9 +363,9 @@ export default function CreatePage() {
                   <div className="absolute top-[6%] left-1/2 -translate-x-1/2 w-[35%] h-[4%] bg-[#1C1C1E] rounded-full z-10" />
                 </div>
                 <div className="absolute inset-[4%] rounded-[20px] overflow-hidden bg-sand">
-                  {previewUrl ? (
+                  {photos.length > 0 ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={photos[0].preview} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-muted">
                       <Upload className="w-6 h-6" />

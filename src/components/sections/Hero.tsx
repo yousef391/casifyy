@@ -13,10 +13,11 @@ const SHOWCASE_CASES = [
   { src: '/products/case-floral.png', name: 'Floral', nameAr: 'زهرة' },
 ];
 
-function PhoneFrame({ src, className, size = 'md' }: { src: string; className?: string; size?: 'sm' | 'md' | 'lg' }) {
+function PhoneFrame({ src, className, size = 'md', priority = false }: { src: string; className?: string; size?: 'sm' | 'md' | 'lg'; priority?: boolean }) {
   const dims = size === 'lg' ? 'w-[220px] h-[440px]' : size === 'md' ? 'w-[160px] h-[320px]' : 'w-[120px] h-[240px]';
   const radius = size === 'lg' ? 'rounded-[32px]' : size === 'md' ? 'rounded-[24px]' : 'rounded-[20px]';
   const innerRadius = size === 'lg' ? 'rounded-[28px]' : size === 'md' ? 'rounded-[20px]' : 'rounded-[16px]';
+  const imgSize = size === 'lg' ? '220px' : size === 'md' ? '160px' : '120px';
 
   return (
     <div className={`${dims} relative shrink-0 ${className || ''}`}>
@@ -31,7 +32,7 @@ function PhoneFrame({ src, className, size = 'md' }: { src: string; className?: 
       </div>
       {/* Screen / case image */}
       <div className={`absolute inset-[4%] ${innerRadius} overflow-hidden bg-sand`}>
-        <Image src={src} alt="Phone case" fill className="object-cover" sizes="220px" />
+        <Image src={src} alt="Phone case" fill className="object-cover" sizes={imgSize} priority={priority} />
       </div>
     </div>
   );
@@ -40,7 +41,7 @@ function PhoneFrame({ src, className, size = 'md' }: { src: string; className?: 
 export default function Hero() {
   const { locale } = useLanguage();
   const [activeCase, setActiveCase] = useState(0);
-  const isDark = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
+  // Removed window check — handled by ThemeContext
 
   const t = {
     badge: locale === 'ar' ? '✦ أغطية حرفية' : locale === 'en' ? '✦ Artisan Cases' : '✦ Coques Artisanales',
@@ -180,7 +181,7 @@ export default function Hero() {
 
             {/* Center phone (main) */}
             <div className="flex flex-col items-center">
-              <PhoneFrame src={SHOWCASE_CASES[activeCase].src} size="lg" />
+              <PhoneFrame src={SHOWCASE_CASES[activeCase].src} size="lg" priority />
               <p className="font-serif text-base font-light text-ink mt-3 tracking-wide">
                 {SHOWCASE_CASES[activeCase].name}
               </p>
@@ -248,7 +249,7 @@ export default function Hero() {
           <div style={{ transform: 'rotate(-6deg)' }}>
             <PhoneFrame src={SHOWCASE_CASES[(activeCase + 3) % 4].src} size="sm" className="opacity-60" />
           </div>
-          <PhoneFrame src={SHOWCASE_CASES[activeCase].src} size="md" />
+          <PhoneFrame src={SHOWCASE_CASES[activeCase].src} size="md" priority />
           <div style={{ transform: 'rotate(6deg)' }}>
             <PhoneFrame src={SHOWCASE_CASES[(activeCase + 1) % 4].src} size="sm" className="opacity-60" />
           </div>
